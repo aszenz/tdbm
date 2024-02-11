@@ -19,3 +19,4 @@ vendor/*
 /xdebug/
 .php_cs.cache
 tdbm.lock.yml
+.vscode
