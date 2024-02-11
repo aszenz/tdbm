@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheCodingMachine\TDBM\QueryFactory;
 
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Schema;
 use PHPSQLParser\builders\OrderByBuilder;
 use PHPSQLParser\builders\SelectStatementBuilder;
@@ -232,7 +233,7 @@ class FindObjectsFromRawSqlQueryFactory implements QueryFactory
             }
 
             $table = $this->schema->getTable($tableName);
-            $pkColumns = $table->getPrimaryKeyColumns();
+            $pkColumns = \array_map(fn(Column $col) => $col->getName(), $table->getPrimaryKeyColumns());
             foreach ($table->getColumns() as $column) {
                 $columnName = $column->getName();
                 $alias = AbstractQueryFactory::getColumnAlias($tableName, $columnName);
