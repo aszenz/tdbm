@@ -140,7 +140,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->toArray()[$offset]);
     }
@@ -158,7 +158,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->toArray()[$offset];
     }
@@ -177,7 +177,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new TDBMInvalidOperationException('You can set values in a TDBM result set, even in an alterable one. Use the add method instead.');
     }
@@ -193,7 +193,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new TDBMInvalidOperationException('You can unset values in a TDBM result set, even in an alterable one. Use the delete method instead.');
     }
@@ -209,7 +209,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         if ($this->resultIterator instanceof \Countable && $this->alterations->count() === 0) {
             return $this->resultIterator->count();
@@ -222,7 +222,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @return \Traversable
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         if ($this->alterations->count() === 0) {
             if ($this->resultIterator !== null) {
@@ -245,7 +245,7 @@ class AlterableResultIterator implements ResultInterface, \ArrayAccess, \JsonSer
      *
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TheCodingMachine\TDBM;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Statement;
 use Mouf\Database\MagicQuery;
 use Psr\Log\LoggerInterface;
@@ -35,7 +35,7 @@ use TheCodingMachine\TDBM\Utils\DbalUtils;
  */
 class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
 {
-    /** @var ResultStatement|Statement */
+    /** @var Result|Statement */
     protected $statement;
 
     /** @var bool */
@@ -124,10 +124,8 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
 
     /**
      * Counts found records (this is the number of records fetched, taking into account the LIMIT and OFFSET settings).
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         if ($this->count !== null) {
             return $this->count;
@@ -135,7 +133,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
 
         if ($this->fetchStarted && $this->tdbmService->getConnection()->getDatabasePlatform() instanceof MySqlPlatform) {
             // Optimisation: we don't need a separate "count" SQL request in MySQL.
-            assert($this->statement instanceof Statement);
+            // assert($this->statement instanceof Statement);
             $this->count = (int)$this->statement->rowCount();
             return $this->count;
         }
@@ -152,26 +150,22 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
 
         $this->logger->debug('Running count SQL request: '.$countSql);
 
-        $this->count = (int) $this->tdbmService->getConnection()->fetchColumn($countSql, $this->parameters, 0, DbalUtils::generateTypes($this->parameters));
+        $this->count = (int) $this->tdbmService->getConnection()->fetchOne($countSql, $this->parameters, DbalUtils::generateTypes($this->parameters));
         return $this->count;
     }
 
     /**
      * Fetches record at current cursor.
-     *
-     * @return AbstractTDBMObject
      */
-    public function current()
+    public function current(): AbstractTDBMObject
     {
         return $this->current;
     }
 
     /**
      * Returns the current result's key.
-     *
-     * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->key;
     }
@@ -270,7 +264,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
     /**
      * Moves the cursor to the beginning of the result set.
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->executeQuery();
         $this->key = -1;
@@ -278,10 +272,8 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
     }
     /**
      * Checks if the cursor is reading a valid result.
-     *
-     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->current !== null;
     }
@@ -302,7 +294,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         throw new TDBMInvalidOperationException('You cannot access this result set via index because it was fetched in CURSOR mode. Use ARRAY_MODE instead.');
     }
@@ -320,7 +312,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
      *
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         throw new TDBMInvalidOperationException('You cannot access this result set via index because it was fetched in CURSOR mode. Use ARRAY_MODE instead.');
     }
@@ -339,7 +331,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new TDBMInvalidOperationException('You cannot set values in a TDBM result set.');
     }
@@ -355,7 +347,7 @@ class InnerResultIterator implements \Iterator, InnerResultIteratorInterface
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new TDBMInvalidOperationException('You cannot unset values in a TDBM result set.');
     }
