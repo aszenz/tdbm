@@ -110,7 +110,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
     {
         $sql = $this->magicQuery->buildPreparedStatement($this->queryFactory->getMagicSqlCount(), $this->parameters);
         $this->logger->debug('Running count query: '.$sql);
-        $this->totalCount = (int) $this->tdbmService->getConnection()->fetchColumn($sql, $this->parameters, 0, DbalUtils::generateTypes($this->parameters));
+        $this->totalCount = (int) $this->tdbmService->getConnection()->fetchOne($sql, $this->parameters, DbalUtils::generateTypes($this->parameters));
     }
 
     /**
@@ -157,10 +157,8 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
 
     /**
      * Retrieve an external iterator.
-     *
-     * @return InnerResultIteratorInterface
      */
-    public function getIterator()
+    public function getIterator(): InnerResultIteratorInterface
     {
         if ($this->innerResultIterator === null) {
             if ($this->totalCount === 0) {
@@ -199,7 +197,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->getIterator()->offsetExists($offset);
     }
@@ -217,7 +215,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getIterator()->offsetGet($offset);
     }
@@ -236,7 +234,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->getIterator()->offsetSet($offset, $value);
     }
@@ -252,7 +250,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->getIterator()->offsetUnset($offset);
     }
@@ -271,7 +269,7 @@ class ResultIterator implements ResultInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.4.0
      */
-    public function jsonSerialize($stopRecursion = false)
+    public function jsonSerialize(bool $stopRecursion = false): mixed
     {
         return array_map(function (AbstractTDBMObject $item) use ($stopRecursion) {
             return $item->jsonSerialize($stopRecursion);

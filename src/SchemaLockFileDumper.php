@@ -68,7 +68,7 @@ class SchemaLockFileDumper
     public function getCachePrefix(): string
     {
         if ($this->cachePrefix === null) {
-            $this->cachePrefix = hash('md4', $this->connection->getHost().'-'.$this->connection->getPort().'-'.$this->connection->getDatabase().'-'.$this->connection->getDriver()->getName());
+            $this->cachePrefix = hash('md4', $this->connection->getParams()['host'].'-'.$this->connection->getParams()['port'].'-'.$this->connection->getDatabase().'-'.$this->connection->getDriver()->getDatabasePlatform()->getName());
         }
 
         return $this->cachePrefix;

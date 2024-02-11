@@ -198,7 +198,7 @@ class DbRow
             $sql = 'SELECT * FROM '.$connection->quoteIdentifier($this->dbTableName).' WHERE '.$sql_where;
             $result = $connection->executeQuery($sql, $parameters);
 
-            $row = $result->fetch(\PDO::FETCH_ASSOC);
+            $row = $result->fetchAssociative();
 
             if ($row === false) {
                 throw new TDBMException("Could not retrieve object from table \"$this->dbTableName\" using filter \".$sql_where.\" with data \"".var_export($parameters, true)."\".");
@@ -211,7 +211,7 @@ class DbRow
                 $this->dbRow[$key] = $types[$key]->convertToPHPValue($value, $connection->getDatabasePlatform());
             }
 
-            $result->closeCursor();
+            // $result->closeCursor();
 
             $this->status = TDBMObjectStateEnum::STATE_LOADED;
         }

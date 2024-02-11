@@ -35,7 +35,7 @@ class MapIteratorTest extends TestCase
             public $property2 = "Public property two";
             public $property3 = "Public property three";
 
-            public function getIterator()
+            public function getIterator(): ArrayIterator
             {
                 return new ArrayIterator($this);
             }

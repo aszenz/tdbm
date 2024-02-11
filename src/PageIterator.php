@@ -114,10 +114,8 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
 
     /**
      * Retrieve an external iterator.
-     *
-     * @return InnerResultIteratorInterface
      */
-    public function getIterator()
+    public function getIterator(): InnerResultIteratorInterface
     {
         if ($this->innerResultIterator === null) {
             if ($this->parentResult->count() === 0) {
@@ -204,7 +202,7 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return $this->getIterator()->offsetExists($offset);
     }
@@ -222,7 +220,7 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getIterator()->offsetGet($offset);
     }
@@ -241,7 +239,7 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->getIterator()->offsetSet($offset, $value);
     }
@@ -257,7 +255,7 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->getIterator()->offsetUnset($offset);
     }
@@ -272,7 +270,7 @@ class PageIterator implements PageInterface, \ArrayAccess, \JsonSerializable
      *
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return array_map(function (AbstractTDBMObject $item) {
             return $item->jsonSerialize();
